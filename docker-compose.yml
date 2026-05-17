@@ -1,0 +1,13 @@
+# Lokalny build i test kontenera (np. docker compose up --build)
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_SUPABASE_URL: ${REACT_APP_SUPABASE_URL}
+        REACT_APP_SUPABASE_ANON_KEY: ${REACT_APP_SUPABASE_ANON_KEY}
+        REACT_APP_WEB3FORMS_ACCESS_KEY: ${REACT_APP_WEB3FORMS_ACCESS_KEY}
+    ports:
+      - "${HTTP_PORT:-8080}:80"
+    restart: unless-stopped

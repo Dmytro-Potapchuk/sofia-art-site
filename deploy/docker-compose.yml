@@ -1,0 +1,8 @@
+# Plik na VPS — skopiuj do katalogu deploy (np. /opt/sofia-art/)
+services:
+  web:
+    image: ${IMAGE}
+    container_name: sofia-art-web
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    restart: unless-stopped
