@@ -16,7 +16,7 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
   const { removeImage } = useArtworks();
   const location = useLocation();
   const navigate = useNavigate();
-  const [pageSize] = useState<number>(8);
+  const [pageSize] = useState<number>(6);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
