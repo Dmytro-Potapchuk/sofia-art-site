@@ -1,29 +1,64 @@
 import React from 'react';
-import { Container, Col, Row, Nav } from 'react-bootstrap';
+import {
+  CONTACT_EMAIL,
+  CONTACT_EMAIL_HREF,
+  CONTACT_PHONE,
+  CONTACT_PHONE_HREF,
+} from '../../i18n/translations';
+import { useLanguage } from '../../context/LanguageContext';
+import { ScrollLink } from '../ScrollLink/ScrollLink';
 import styles from './Footer.module.css';
+
 const Footer = () => {
+  const { t } = useLanguage();
+
   return (
-    <footer className={`${styles.footer} bg-dark text-light py-3 mr-auto`}>
-      <Container>
-        <Row className="justify-content-center mt-auto">
-          <Col md={4}>
-            <h5>Kontakt</h5>
-            <Nav className="flex-column">
-              <Nav.Link>Adres: вул. Sulejówek Drobiarska 59</Nav.Link>
-              <Nav.Link>Telefon: +48 507 340 438</Nav.Link>
-              <Nav.Link>Email: info@mysite.com</Nav.Link>
-            </Nav>
-          </Col>
-          <Col md={4}>
-            <h5>Linkya</h5>
-            <Nav className="flex-column">
-              <Nav.Link href="#">Home</Nav.Link>
-              <Nav.Link href="#">About</Nav.Link>
-              <Nav.Link href="#">Kontakt</Nav.Link>
-            </Nav>
-          </Col>
-        </Row>
-      </Container>
+    <footer className={styles.footer}>
+      <div className="container">
+        <div className={styles.grid}>
+          <div className={styles.brandBlock}>
+            <p className={styles.brand}>{t('brand')}</p>
+            <p className={styles.tagline}>{t('footerTagline')}</p>
+          </div>
+
+          <div>
+            <p className={styles.columnTitle}>{t('footerNavigate')}</p>
+            <nav className={styles.links} aria-label="Footer navigation">
+              <ScrollLink to="/" className={styles.link}>
+                {t('navGallery')}
+              </ScrollLink>
+              <ScrollLink to="/#collection" className={styles.link}>
+                {t('navCollection')}
+              </ScrollLink>
+              <ScrollLink to="/#contact" className={styles.link}>
+                {t('navContact')}
+              </ScrollLink>
+            </nav>
+          </div>
+
+          <div>
+            <p className={styles.columnTitle}>{t('footerStudio')}</p>
+            <address className={styles.contactItem}>
+              {t('footerAddress')}
+              <br />
+              <a href={CONTACT_PHONE_HREF} className={styles.link}>
+                {CONTACT_PHONE}
+              </a>
+              <br />
+              <a href={CONTACT_EMAIL_HREF} className={styles.link}>
+                {CONTACT_EMAIL}
+              </a>
+            </address>
+          </div>
+        </div>
+
+        <div className={styles.bottom}>
+          <span>
+            © {new Date().getFullYear()} {t('brand')}. {t('footerRights')}
+          </span>
+          <span>{t('footerCrafted')}</span>
+        </div>
+      </div>
     </footer>
   );
 };

@@ -1,0 +1,9 @@
+[data-rmiz-modal-overlay] {
+  background-color: rgba(12, 11, 10, 0.92) !important;
+  backdrop-filter: blur(8px);
+}
+
+[data-rmiz-btn-zoom],
+[data-rmiz-btn-unzoom] {
+  color: var(--color-accent);
+}

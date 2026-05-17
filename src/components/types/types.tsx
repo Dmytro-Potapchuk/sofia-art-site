@@ -1,8 +1,9 @@
 export interface Image {
-  id: number;
+  id: string;
   url: string;
   title: string;
   description: string;
+  storagePath?: string | null;
 }
 
 export interface GalleryProps {

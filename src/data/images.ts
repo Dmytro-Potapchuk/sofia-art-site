@@ -1,74 +1,63 @@
-export const imageData = [
+import { Image } from '../components/types';
+
+export const staticImages: Image[] = [
   {
-    id: 1,
-    title: 'Sunset',
-    url: '/1682015744120.jpg',
-    description: 'Beautiful sunset view',
-  },
-  {
-    id: 2,
-    title: 'Mountain',
-    url: '/1682015760703.jpg',
-    description: 'Snowy mountain landscape',
-  },
-  {
-    id: 3,
-    title: 'Forest',
-    url: '/1682015771796.jpg',
-    description: 'Peaceful forest trail',
-  },
-  {
-    id: 4,
-    title: 'City',
-    url: '/Carlik.png',
-    description: 'Busy city skyline at dusk',
-  },
-  {
-    id: 5,
-    title: 'Ocean',
-    url: '/feja.jpg',
-    description: 'Calm ocean wave scenery',
-  },
-  {
-    id: 6,
-    title: 'River',
+    id: '1',
+    title: 'Morning Light',
+    description:
+      'Delicate interplay of dawn hues on canvas — a quiet meditation on light and stillness.',
     url: '/images/IMG_20230420_063717.jpg',
-    description: 'Flowing river through the valley',
   },
   {
-    id: 7,
-    title: 'Desert',
-    url: '/nat.png',
-    description: 'Endless desert under blue sky',
+    id: '2',
+    title: 'Urban Echo',
+    description:
+      'Bold strokes capture the rhythm of the city — movement frozen in pigment.',
+    url: '/images/1682015760703.jpg',
   },
   {
-    id: 8,
-    title: 'Bridge',
-    url: '/morze.png',
-    description: 'Suspension bridge over water',
+    id: '3',
+    title: 'Forest Whisper',
+    description:
+      'Layers of green and shadow evoke the hush of woodland paths at dusk.',
+    url: '/images/1682015744120.jpg',
   },
   {
-    id: 9,
-    title: 'Lighthouse',
-    url: '/images/lighthouse.jpg',
-    description: 'Coastal lighthouse at sunset',
+    id: '4',
+    title: 'Horizon Line',
+    description:
+      'A sweeping vista where sky meets earth — color fields in harmonious tension.',
+    url: '/images/1682015771796.jpg',
   },
   {
-    id: 10,
-    title: 'Canyon',
-    url: '/images/canyon.jpg',
-    description: 'Scenic canyon landscape',
+    id: '5',
+    title: 'Portrait Study',
+    description:
+      'Intimate character study exploring form, gaze, and emotional depth.',
+    url: '/images/Carlik.png',
   },
   {
-    id: 11,
-    title: 'Waterfall',
-    url: '/images/waterfall.jpg',
-    description: 'Majestic waterfall in forest',
+    id: '6',
+    title: 'Nature Suite',
+    description:
+      'Organic textures and botanical forms rendered with expressive brushwork.',
+    url: '/images/nat.png',
   },
   {
-    id: 12,
-    title: 'Aurora',
-    url: '/images/aurora.jpg',
-    description: 'Northern lights above snow',
+    id: '7',
+    title: 'Coastal Dream',
+    description:
+      'Sea and sky merge in fluid blues — a cinematic seascape in oil.',
+    url: '/images/morze.png',
+  },
+  {
+    id: '8',
+    title: 'Ethereal Form',
+    description:
+      'Abstract figuration dissolving into atmosphere — dreamlike and luminous.',
+    url: '/images/feja.png',
   },
 ];
+
+/** @deprecated Use useArtworks() or staticImages */
+export const images = staticImages;

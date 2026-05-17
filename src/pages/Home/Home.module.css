@@ -1,0 +1,144 @@
+.hero {
+  position: relative;
+  padding: clamp(5rem, 12vw, 10rem) 0 clamp(4rem, 8vw, 7rem);
+  overflow: hidden;
+}
+
+.heroInner {
+  display: grid;
+  gap: var(--space-3xl);
+  align-items: end;
+}
+
+.heroContent {
+  max-width: 52rem;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: var(--space-lg);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.title {
+  font-size: var(--text-hero);
+  font-weight: 300;
+  line-height: 0.95;
+  color: var(--color-cream);
+  margin-bottom: var(--space-xl);
+}
+
+.title em {
+  font-style: italic;
+  color: var(--color-blush);
+}
+
+.lead {
+  max-width: 36rem;
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2xl);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.heroVisual {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  max-height: 520px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.02);
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.heroVisual:hover .heroImage {
+  transform: scale(1.06);
+}
+
+.heroVisual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(12, 11, 10, 0.55) 0%,
+    transparent 45%
+  );
+  pointer-events: none;
+}
+
+.heroCaption {
+  position: absolute;
+  bottom: var(--space-lg);
+  left: var(--space-lg);
+  right: var(--space-lg);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  z-index: 1;
+}
+
+.heroGlow {
+  position: absolute;
+  top: 10%;
+  right: -15%;
+  width: min(50vw, 420px);
+  height: min(50vw, 420px);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--hero-glow), transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.collection {
+  padding-bottom: var(--space-section);
+}
+
+.collectionHeader {
+  margin-bottom: var(--space-3xl);
+}
+
+.collectionTitle {
+  font-size: var(--text-3xl);
+  color: var(--color-cream);
+  margin-bottom: var(--space-sm);
+}
+
+.collectionSubtitle {
+  max-width: 32rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+}
+
+@media (min-width: 900px) {
+  .heroInner {
+    grid-template-columns: 1.1fr 0.75fr;
+    gap: var(--space-4xl);
+  }
+
+  .heroVisual {
+    margin-top: var(--space-2xl);
+  }
+}
+
+@media (max-width: 899px) {
+  .heroVisual {
+    max-width: 380px;
+  }
+}
