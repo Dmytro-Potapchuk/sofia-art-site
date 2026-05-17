@@ -17,11 +17,15 @@ jobs:
       packages: write
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}
-      IMAGE: ghcr.io/${{ github.repository }}:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set lowercase image tags (GHCR requirement)
+        run: |
+          REPO="${GITHUB_REPOSITORY,,}"
+          echo "IMAGE_NAME=${REPO}" >> "$GITHUB_ENV"
+          echo "IMAGE=ghcr.io/${REPO}:latest" >> "$GITHUB_ENV"
 
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
