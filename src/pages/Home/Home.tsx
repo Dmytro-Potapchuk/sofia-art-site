@@ -4,15 +4,20 @@ import { Gallery } from '../../components/Gallery';
 import { ContactSection } from '../../components/ContactSection/ContactSection';
 import { ScrollLink } from '../../components/ScrollLink/ScrollLink';
 import { useLanguage } from '../../context/LanguageContext';
+import { getLocalizedArtwork } from '../../i18n/artworkText';
 import { AdminArtworkPanel } from '../../components/AdminArtworkPanel/AdminArtworkPanel';
+import { AdminFeaturedPanel } from '../../components/AdminFeaturedPanel';
 import { useArtworks } from '../../context/ArtworksContext';
 import styles from './Home.module.css';
 
 const Home = () => {
   const location = useLocation();
-  const { t } = useLanguage();
-  const { images } = useArtworks();
-  const heroImage = images[0];
+  const { language, t } = useLanguage();
+  const { images, featuredImage } = useArtworks();
+  const heroImage = featuredImage;
+  const heroText = heroImage
+    ? getLocalizedArtwork(heroImage, language)
+    : null;
 
   if (!heroImage) {
     return null;
@@ -41,12 +46,16 @@ const Home = () => {
 
           <figure className={styles.heroVisual}>
             <img
+              key={heroImage.id}
               src={heroImage.url}
-              alt={heroImage.title}
+              alt={heroText?.title ?? ''}
               className={styles.heroImage}
+              width={800}
+              height={1000}
+              decoding="async"
             />
             <figcaption className={styles.heroCaption}>
-              {t('heroFeatured')} — {heroImage.title}
+              {t('heroFeatured')} — {heroText?.title}
             </figcaption>
           </figure>
         </div>
@@ -61,6 +70,7 @@ const Home = () => {
               {t('collectionSubtitle')}
             </p>
           </header>
+          <AdminFeaturedPanel />
           <AdminArtworkPanel />
           <Gallery key={location.search} images={images} />
         </div>

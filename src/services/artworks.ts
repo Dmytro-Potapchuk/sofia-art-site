@@ -1,4 +1,4 @@
-import { Image } from '../components/types';
+import { ArtworkCopy, Image } from '../components/types';
 import {
   ARTWORKS_BUCKET,
   isSupabaseConfigured,
@@ -7,8 +7,10 @@ import {
 
 interface ArtworkRow {
   id: string;
-  title: string;
-  description: string;
+  title_en: string;
+  title_pl: string;
+  description_en: string;
+  description_pl: string;
   url: string;
   storage_path: string | null;
   sort_order: number;
@@ -16,14 +18,19 @@ interface ArtworkRow {
 
 const mapRow = (row: ArtworkRow): Image => ({
   id: row.id,
-  title: row.title,
-  description: row.description,
+  titleEn: row.title_en,
+  titlePl: row.title_pl ?? '',
+  descriptionEn: row.description_en,
+  descriptionPl: row.description_pl ?? '',
   url: row.url,
   storagePath: row.storage_path,
 });
 
 const formatDbError = (error: { message: string; details?: string }): string =>
   error.details ? `${error.message} (${error.details})` : error.message;
+
+const artworkSelect =
+  'id, title_en, title_pl, description_en, description_pl, url, storage_path, sort_order';
 
 /** PostgreSQL integer max; Date.now() to za duze na sort_order */
 const getNextSortOrder = async (): Promise<number> => {
@@ -46,7 +53,7 @@ export const fetchArtworksFromDb = async (): Promise<Image[]> => {
 
   const { data, error } = await supabase
     .from('artworks')
-    .select('id, title, description, url, storage_path, sort_order')
+    .select(artworkSelect)
     .order('sort_order', { ascending: true })
     .order('created_at', { ascending: true });
 
@@ -54,22 +61,28 @@ export const fetchArtworksFromDb = async (): Promise<Image[]> => {
   return (data as ArtworkRow[]).map(mapRow);
 };
 
-export interface UploadArtworkInput {
-  title: string;
-  description: string;
+export interface UploadArtworkInput extends ArtworkCopy {
   file: File;
   userId: string;
 }
 
+const trimCopy = (copy: ArtworkCopy): ArtworkCopy => ({
+  titleEn: copy.titleEn.trim(),
+  titlePl: copy.titlePl.trim(),
+  descriptionEn: copy.descriptionEn.trim(),
+  descriptionPl: copy.descriptionPl.trim(),
+});
+
 export const uploadArtwork = async ({
-  title,
-  description,
   file,
   userId,
+  ...copy
 }: UploadArtworkInput): Promise<Image> => {
   if (!supabase) {
     throw new Error('Supabase is not configured');
   }
+
+  const localized = trimCopy(copy);
 
   const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
@@ -94,13 +107,15 @@ export const uploadArtwork = async ({
   const { data, error } = await supabase
     .from('artworks')
     .insert({
-      title: title.trim(),
-      description: description.trim(),
+      title_en: localized.titleEn,
+      title_pl: localized.titlePl,
+      description_en: localized.descriptionEn,
+      description_pl: localized.descriptionPl,
       url: publicData.publicUrl,
       storage_path: storagePath,
       sort_order: sortOrder,
     })
-    .select('id, title, description, url, storage_path, sort_order')
+    .select(artworkSelect)
     .single();
 
   if (error) {
@@ -108,6 +123,32 @@ export const uploadArtwork = async ({
     throw new Error(formatDbError(error));
   }
 
+  return mapRow(data as ArtworkRow);
+};
+
+export const updateArtwork = async (
+  id: string,
+  copy: ArtworkCopy
+): Promise<Image> => {
+  if (!supabase) {
+    throw new Error('Supabase is not configured');
+  }
+
+  const localized = trimCopy(copy);
+
+  const { data, error } = await supabase
+    .from('artworks')
+    .update({
+      title_en: localized.titleEn,
+      title_pl: localized.titlePl,
+      description_en: localized.descriptionEn,
+      description_pl: localized.descriptionPl,
+    })
+    .eq('id', id)
+    .select(artworkSelect)
+    .single();
+
+  if (error) throw new Error(formatDbError(error));
   return mapRow(data as ArtworkRow);
 };
 

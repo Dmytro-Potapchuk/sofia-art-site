@@ -8,6 +8,13 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 [id] {
@@ -27,8 +34,12 @@ body {
   line-height: 1.65;
   color: var(--color-text);
   background-color: var(--color-bg);
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
 }
 
 body::before {
@@ -78,6 +89,7 @@ a {
 
 img {
   max-width: 100%;
+  height: auto;
   display: block;
 }
 

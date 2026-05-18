@@ -1,6 +1,8 @@
 import React, { FormEvent, useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
+import { useEscapeKey } from '../../hooks/useEscapeKey';
 import styles from './LoginModal.module.css';
 
 interface LoginModalProps {
@@ -15,6 +17,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  useBodyScrollLock(open);
+  useEscapeKey(open, onClose);
 
   useEffect(() => {
     if (!open) {
@@ -43,14 +48,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
   };
 
   return (
-    <div
-      className={styles.overlay}
-      role="presentation"
-      onClick={onClose}
-      onKeyDown={(event) => {
-        if (event.key === 'Escape') onClose();
-      }}
-    >
+    <div className={styles.overlay} role="presentation" onClick={onClose}>
       <div
         className={styles.dialog}
         role="dialog"

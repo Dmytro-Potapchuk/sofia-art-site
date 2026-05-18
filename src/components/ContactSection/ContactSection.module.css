@@ -7,6 +7,7 @@
 .inner {
   display: grid;
   gap: var(--space-3xl);
+  min-width: 0;
 }
 
 .intro {
@@ -40,6 +41,9 @@
 }
 
 .detailLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
   font-size: var(--text-lg);
   color: var(--color-cream);
   transition: color var(--duration-base) var(--ease-out);
@@ -54,10 +58,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
-  padding: var(--space-2xl);
+  padding: clamp(var(--space-lg), 4vw, var(--space-2xl));
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
+  min-width: 0;
 }
 
 .field {
@@ -74,6 +79,7 @@
 .input,
 .textarea {
   width: 100%;
+  min-height: var(--touch-min);
   padding: 0.85rem 1rem;
   font: inherit;
   color: var(--color-text);
@@ -97,7 +103,7 @@
 }
 
 .textarea {
-  min-height: 140px;
+  min-height: 8.75rem;
   resize: vertical;
 }
 
@@ -124,8 +130,15 @@
 }
 
 .submitBtn {
-  width: fit-content;
-  min-width: 12rem;
+  width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 480px) {
+  .submitBtn {
+    width: fit-content;
+    min-width: 12rem;
+  }
 }
 
 .submitBtn:disabled {

@@ -1,0 +1,1 @@
+export { AdminEditArtworkModal } from './AdminEditArtworkModal';

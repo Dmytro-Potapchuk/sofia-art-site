@@ -18,6 +18,7 @@
   --color-blush: #e8d4c4;
   --header-bg: rgba(12, 11, 10, 0.72);
   --hero-glow: rgba(201, 169, 98, 0.08);
+  --overlay-bg: rgba(8, 7, 6, 0.55);
 }
 
 [data-theme='light'] {
@@ -39,6 +40,7 @@
   --color-blush: #6b5340;
   --header-bg: rgba(247, 244, 239, 0.85);
   --hero-glow: rgba(154, 123, 60, 0.12);
+  --overlay-bg: rgba(26, 23, 20, 0.4);
 }
 
 :root {
@@ -51,8 +53,8 @@
   --text-lg: clamp(1.1rem, 1rem + 0.5vw, 1.25rem);
   --text-xl: clamp(1.35rem, 1.2rem + 0.8vw, 1.75rem);
   --text-2xl: clamp(1.75rem, 1.5rem + 1.2vw, 2.5rem);
-  --text-3xl: clamp(2.25rem, 1.8rem + 2vw, 3.5rem);
-  --text-hero: clamp(3rem, 2.2rem + 4vw, 6rem);
+  --text-3xl: clamp(2rem, 1.6rem + 1.8vw, 3.5rem);
+  --text-hero: clamp(2.5rem, 1.75rem + 5vw, 6rem);
 
   --space-2xs: 0.25rem;
   --space-xs: 0.5rem;
@@ -60,14 +62,16 @@
   --space-md: 1rem;
   --space-lg: 1.5rem;
   --space-xl: 2rem;
-  --space-2xl: 3rem;
-  --space-3xl: 4.5rem;
-  --space-4xl: 7rem;
-  --space-section: clamp(4rem, 3rem + 5vw, 8rem);
+  --space-2xl: clamp(2rem, 1.5rem + 2vw, 3rem);
+  --space-3xl: clamp(2.5rem, 2rem + 2.5vw, 4.5rem);
+  --space-4xl: clamp(3.5rem, 2.5rem + 4vw, 7rem);
+  --space-section: clamp(3.5rem, 2.5rem + 5vw, 8rem);
 
   --container-max: 1280px;
   --container-narrow: 720px;
-  --header-height: 4.5rem;
+  --container-padding: clamp(1rem, 0.75rem + 2vw, 2.5rem);
+  --header-height: calc(4.25rem + env(safe-area-inset-top, 0px));
+  --touch-min: 2.75rem;
 
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -75,6 +79,7 @@
   --radius-pill: 999px;
 
   --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.28);
   --shadow-glow: 0 0 60px var(--color-accent-glow);
 
   --blur-glass: 16px;
@@ -84,8 +89,21 @@
   --duration-fast: 180ms;
   --duration-base: 320ms;
   --duration-slow: 560ms;
+
+  /* Breakpoints (reference — use in @media) */
+  --bp-sm: 480px;
+  --bp-md: 768px;
+  --bp-lg: 900px;
+  --bp-xl: 1024px;
+
+  /* Z-index scale */
+  --z-header: 100;
+  --z-drawer-backdrop: 110;
+  --z-drawer: 120;
+  --z-modal: 200;
 }
 
 [data-theme='dark'] {
   --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.5);
 }

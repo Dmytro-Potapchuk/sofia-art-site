@@ -1,7 +1,8 @@
 .hero {
   position: relative;
-  padding: clamp(5rem, 12vw, 10rem) 0 clamp(4rem, 8vw, 7rem);
-  overflow: hidden;
+  padding-block: clamp(3.5rem, 8vw + 1rem, 10rem)
+    clamp(3rem, 6vw + 1rem, 7rem);
+  overflow: clip;
 }
 
 .heroInner {
@@ -12,6 +13,7 @@
 
 .heroContent {
   max-width: 52rem;
+  min-width: 0;
 }
 
 .eyebrow {
@@ -30,6 +32,8 @@
   line-height: 0.95;
   color: var(--color-cream);
   margin-bottom: var(--space-xl);
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .title em {
@@ -50,10 +54,18 @@
   gap: var(--space-md);
 }
 
+.heroActions .btn {
+  flex: 1 1 auto;
+  min-width: min(100%, 10rem);
+}
+
 .heroVisual {
   position: relative;
+  width: 100%;
+  max-width: min(100%, 28rem);
+  margin-inline: auto;
   aspect-ratio: 4 / 5;
-  max-height: 520px;
+  max-height: min(70vh, 520px);
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--color-border);
@@ -63,12 +75,18 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.02);
-  transition: transform var(--duration-slow) var(--ease-out);
+  object-position: center;
 }
 
-.heroVisual:hover .heroImage {
-  transform: scale(1.06);
+@media (hover: hover) {
+  .heroImage {
+    transform: scale(1.02);
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+
+  .heroVisual:hover .heroImage {
+    transform: scale(1.06);
+  }
 }
 
 .heroVisual::after {
@@ -133,12 +151,13 @@
   }
 
   .heroVisual {
+    max-width: none;
+    margin-inline: 0;
     margin-top: var(--space-2xl);
   }
-}
 
-@media (max-width: 899px) {
-  .heroVisual {
-    max-width: 380px;
+  .heroActions .btn {
+    flex: 0 1 auto;
+    min-width: auto;
   }
 }

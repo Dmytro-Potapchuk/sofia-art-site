@@ -1,0 +1,14 @@
+# Fragment do /etc/caddy/Caddyfile (Caddy ma porty 80 i 443 na tym VPS).
+# Nie używaj nginx ani certbot --nginx obok Caddy.
+#
+# Po edycji:
+#   sudo caddy validate --config /etc/caddy/Caddyfile
+#   sudo systemctl reload caddy
+
+www.sofiiaarts.pl {
+	redir https://sofiiaarts.pl{uri} permanent
+}
+
+sofiiaarts.pl {
+	reverse_proxy sofia-art-web:80
+}

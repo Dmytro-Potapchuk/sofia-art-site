@@ -1,0 +1,1 @@
+export { AdminFeaturedPanel } from './AdminFeaturedPanel';

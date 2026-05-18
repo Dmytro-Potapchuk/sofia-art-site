@@ -1,38 +1,45 @@
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translate3d(0, 12px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 }
 
 .gallery {
   width: 100%;
+  min-width: 0;
 }
 
 .gridItem {
   animation: fadeUp var(--duration-slow) var(--ease-out) both;
+  min-width: 0;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   gap: var(--space-xl);
-}
-
-@media (min-width: 600px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-2xl) var(--space-xl);
-  }
 }
 
 @media (min-width: 1024px) {
   .grid {
     grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2xl) var(--space-xl);
   }
 
   .gridItem:nth-child(3n + 1) {
@@ -53,32 +60,51 @@
   border-radius: var(--radius-md);
   overflow: hidden;
   transition: border-color var(--duration-base) var(--ease-out),
-    transform var(--duration-base) var(--ease-out),
     box-shadow var(--duration-base) var(--ease-out);
 }
 
-.card:hover {
-  border-color: var(--color-border-strong);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-soft);
+@media (hover: hover) {
+  .card {
+    transition: border-color var(--duration-base) var(--ease-out),
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out);
+  }
+
+  .card:hover {
+    border-color: var(--color-border-strong);
+    transform: translate3d(0, -4px, 0);
+    box-shadow: var(--shadow-soft);
+  }
 }
 
 .imageWrap {
   position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  cursor: pointer;
   aspect-ratio: 3 / 4;
   overflow: hidden;
   background: var(--color-bg-soft);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--duration-slow) var(--ease-out);
+  object-position: center;
 }
 
-.card:hover .image {
-  transform: scale(1.04);
+@media (hover: hover) {
+  .image {
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+
+  .card:hover .image {
+    transform: scale(1.04);
+  }
 }
 
 .imageOverlay {
@@ -94,10 +120,13 @@
   );
   opacity: 0;
   transition: opacity var(--duration-base) var(--ease-out);
+  pointer-events: none;
 }
 
-.card:hover .imageOverlay {
-  opacity: 1;
+@media (hover: hover) {
+  .card:hover .imageOverlay {
+    opacity: 1;
+  }
 }
 
 .viewLabel {
@@ -113,6 +142,7 @@
   flex-direction: column;
   gap: var(--space-md);
   flex: 1;
+  min-width: 0;
 }
 
 .index {
@@ -126,6 +156,7 @@
   font-size: var(--text-xl);
   color: var(--color-cream);
   line-height: 1.2;
+  overflow-wrap: break-word;
 }
 
 .description {
@@ -147,6 +178,16 @@
 
 .cardAction {
   align-self: flex-start;
+}
+
+.editBtn {
+  color: var(--color-accent);
+  border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+}
+
+.editBtn:hover {
+  color: var(--color-cream);
+  border-color: var(--color-accent);
 }
 
 .deleteBtn {
@@ -171,8 +212,8 @@
 }
 
 .pageBtn {
-  min-width: 2.75rem;
-  height: 2.75rem;
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
   padding: 0 var(--space-md);
   font-size: var(--text-sm);
   color: var(--color-text-muted);
@@ -203,4 +244,11 @@
 
 .pageNav {
   padding-inline: var(--space-lg);
+}
+
+@media (max-width: 479px) {
+  .pageNav {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
 }

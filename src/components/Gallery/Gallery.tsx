@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
+import { getLocalizedArtwork } from '../../i18n/artworkText';
 import { useAuth } from '../../context/AuthContext';
 import { useArtworks } from '../../context/ArtworksContext';
+import { AdminEditArtworkModal } from '../AdminEditArtworkModal';
 import { Image } from '../types';
 import styles from './Gallery.module.css';
 
@@ -11,13 +13,14 @@ interface GalleryProps {
 }
 
 const Gallery: React.FC<GalleryProps> = ({ images }) => {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const { isAdmin } = useAuth();
-  const { removeImage } = useArtworks();
+  const { removeImage, updateImage } = useArtworks();
   const location = useLocation();
   const navigate = useNavigate();
   const [pageSize] = useState<number>(6);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [editingImage, setEditingImage] = useState<Image | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -75,7 +78,10 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
   return (
     <div className={styles.gallery}>
       <div className={styles.grid}>
-        {displayedImages.map((image, index) => (
+        {displayedImages.map((image, index) => {
+          const { title, description } = getLocalizedArtwork(image, language);
+
+          return (
           <article
             key={image.id}
             className={styles.gridItem}
@@ -86,11 +92,11 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
                 type="button"
                 className={styles.imageWrap}
                 onClick={() => handleDetailsClick(image.id)}
-                aria-label={`View ${image.title}`}
+                aria-label={`${t('galleryViewPiece')}: ${title}`}
               >
                 <img
                   src={image.url}
-                  alt={image.title}
+                  alt={title}
                   className={styles.image}
                   loading="lazy"
                 />
@@ -104,8 +110,8 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
                 <span className={styles.index}>
                   {String(startIndex + index + 1).padStart(2, '0')}
                 </span>
-                <h3 className={styles.title}>{image.title}</h3>
-                <p className={styles.description}>{image.description}</p>
+                <h3 className={styles.title}>{title}</h3>
+                <p className={styles.description}>{description}</p>
                 <div className={styles.cardActions}>
                   <button
                     type="button"
@@ -115,19 +121,29 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
                     {t('galleryViewDetails')}
                   </button>
                   {isAdmin && (
-                    <button
-                      type="button"
-                      className={`btn btn--ghost ${styles.deleteBtn}`}
-                      onClick={() => void handleDelete(image)}
-                    >
-                      {t('adminDelete')}
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        className={`btn btn--ghost ${styles.editBtn}`}
+                        onClick={() => setEditingImage(image)}
+                      >
+                        {t('adminEdit')}
+                      </button>
+                      <button
+                        type="button"
+                        className={`btn btn--ghost ${styles.deleteBtn}`}
+                        onClick={() => void handleDelete(image)}
+                      >
+                        {t('adminDelete')}
+                      </button>
+                    </>
                   )}
                 </div>
               </div>
             </div>
           </article>
-        ))}
+          );
+        })}
       </div>
 
       {totalPages > 1 && (
@@ -168,6 +184,12 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
           </button>
         </nav>
       )}
+
+      <AdminEditArtworkModal
+        image={editingImage}
+        onClose={() => setEditingImage(null)}
+        onSave={updateImage}
+      />
     </div>
   );
 };
