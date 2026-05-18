@@ -5,6 +5,9 @@ import { useLanguage } from '../../context/LanguageContext';
 import { ArtworkCopy } from '../types';
 import styles from './AdminArtworkPanel.module.css';
 
+const IMAGE_ACCEPT =
+  'image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif';
+
 const emptyCopy = (): ArtworkCopy => ({
   titleEn: '',
   titlePl: '',
@@ -16,8 +19,10 @@ const AdminArtworkPanel: React.FC = () => {
   const { t } = useLanguage();
   const { isAdmin } = useAuth();
   const { addImage } = useArtworks();
-  const fileInputId = useId();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputId = useId();
+  const cameraInputId = useId();
+  const galleryInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const [copy, setCopy] = useState<ArtworkCopy>(emptyCopy);
   const [file, setFile] = useState<File | null>(null);
@@ -30,9 +35,14 @@ const AdminArtworkPanel: React.FC = () => {
   const resetForm = () => {
     setCopy(emptyCopy());
     setFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    if (galleryInputRef.current) galleryInputRef.current.value = '';
+    if (cameraInputRef.current) cameraInputRef.current.value = '';
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = event.target.files?.[0] ?? null;
+    setFile(selected);
+    setError(null);
   };
 
   const handleSubmit = async (event: FormEvent) => {
@@ -136,26 +146,53 @@ const AdminArtworkPanel: React.FC = () => {
 
         <div className={styles.field}>
           <span className={styles.fieldLabel}>{t('adminFileLabel')}</span>
-          <label htmlFor={fileInputId} className={styles.fileDropzone}>
+          <div className={styles.fileUpload}>
             <input
-              ref={fileInputRef}
-              id={fileInputId}
+              ref={galleryInputRef}
+              id={galleryInputId}
+              className={styles.fileInputHidden}
+              type="file"
+              accept={IMAGE_ACCEPT}
+              onChange={handleFileChange}
+              disabled={submitting}
+            />
+            <input
+              ref={cameraInputRef}
+              id={cameraInputId}
               className={styles.fileInputHidden}
               type="file"
               accept="image/*"
               capture="environment"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              required
+              onChange={handleFileChange}
               disabled={submitting}
             />
-            <span className={styles.fileDropzoneIcon} aria-hidden="true">
-              ↑
-            </span>
-            <span className={styles.fileDropzoneText}>
-              {file ? file.name : t('adminFileChoose')}
-            </span>
-            <span className={styles.fileDropzoneHint}>{t('adminFileHint')}</span>
-          </label>
+
+            <div className={styles.fileActions}>
+              <label
+                htmlFor={galleryInputId}
+                className={`btn btn--ghost ${styles.fileBtn}`}
+              >
+                {t('adminFileFromGallery')}
+              </label>
+              <label
+                htmlFor={cameraInputId}
+                className={`btn btn--ghost ${styles.fileBtn}`}
+              >
+                {t('adminFileTakePhoto')}
+              </label>
+            </div>
+
+            {file ? (
+              <p className={styles.fileSelected}>
+                <span className={styles.fileSelectedLabel}>
+                  {t('adminFileSelected')}:
+                </span>{' '}
+                {file.name}
+              </p>
+            ) : (
+              <p className={styles.fileHint}>{t('adminFileHint')}</p>
+            )}
+          </div>
         </div>
 
         {error && (
