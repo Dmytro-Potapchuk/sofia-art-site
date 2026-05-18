@@ -81,6 +81,7 @@ export const translations = {
     authEmail: 'E-mail',
     authPassword: 'Hasło',
     authCancel: 'Anuluj',
+    modalClose: 'Zamknij',
     authSigningIn: 'Logowanie…',
     authLoginError: 'Nie udało się zalogować. Sprawdź dane i spróbuj ponownie.',
     authLoginDbError:
@@ -192,6 +193,7 @@ export const translations = {
     authEmail: 'Email',
     authPassword: 'Password',
     authCancel: 'Cancel',
+    modalClose: 'Close',
     authSigningIn: 'Signing in…',
     authLoginError: 'Could not sign in. Check your credentials and try again.',
     authLoginDbError:

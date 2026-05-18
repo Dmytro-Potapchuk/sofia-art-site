@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getLocalizedArtwork } from '../../i18n/artworkText';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
@@ -29,6 +29,7 @@ const AdminEditArtworkModal: React.FC<AdminEditArtworkModalProps> = ({
   const [copy, setCopy] = useState<ArtworkCopy>(emptyCopy);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const backdropPointerDown = useRef(false);
 
   useBodyScrollLock(open);
   useEscapeKey(open, onClose);
@@ -50,6 +51,21 @@ const AdminEditArtworkModal: React.FC<AdminEditArtworkModalProps> = ({
 
   const preview = getLocalizedArtwork(image, language);
 
+  const handleBackdropPointerDown = (
+    event: React.PointerEvent<HTMLDivElement>,
+  ) => {
+    backdropPointerDown.current = event.target === event.currentTarget;
+  };
+
+  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (
+      event.target === event.currentTarget &&
+      backdropPointerDown.current
+    ) {
+      onClose();
+    }
+  };
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setSubmitting(true);
@@ -66,7 +82,12 @@ const AdminEditArtworkModal: React.FC<AdminEditArtworkModalProps> = ({
   };
 
   return (
-    <div className={styles.overlay} role="presentation" onClick={onClose}>
+    <div
+      className={styles.overlay}
+      role="presentation"
+      onPointerDown={handleBackdropPointerDown}
+      onClick={handleBackdropClick}
+    >
       <div
         className={styles.dialog}
         role="dialog"
@@ -74,10 +95,23 @@ const AdminEditArtworkModal: React.FC<AdminEditArtworkModalProps> = ({
         aria-labelledby="edit-artwork-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 id="edit-artwork-title" className={styles.title}>
-          {t('adminEditTitle')}
-        </h2>
-        <p className={styles.subtitle}>{preview.title}</p>
+        <div className={styles.dialogHeader}>
+          <div className={styles.titleBlock}>
+            <h2 id="edit-artwork-title" className={styles.title}>
+              {t('adminEditTitle')}
+            </h2>
+            <p className={styles.subtitle}>{preview.title}</p>
+          </div>
+          <button
+            type="button"
+            className={styles.closeBtn}
+            onClick={onClose}
+            disabled={submitting}
+            aria-label={t('modalClose')}
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
 
         <form className={styles.form} onSubmit={(e) => void handleSubmit(e)}>
           <label className={styles.label}>
