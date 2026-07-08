@@ -16,6 +16,15 @@ interface ArtworkRow {
   sort_order: number;
 }
 
+interface LegacyArtworkRow {
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+  storage_path: string | null;
+  sort_order: number;
+}
+
 const mapRow = (row: ArtworkRow): Image => ({
   id: row.id,
   titleEn: row.title_en,
@@ -31,6 +40,27 @@ const formatDbError = (error: { message: string; details?: string }): string =>
 
 const artworkSelect =
   'id, title_en, title_pl, description_en, description_pl, url, storage_path, sort_order';
+
+const legacyArtworkSelect =
+  'id, title, description, url, storage_path, sort_order';
+
+const isMissingI18nColumns = (error: {
+  message?: string;
+  code?: string;
+}): boolean =>
+  error.code === '42703' ||
+  error.code === 'PGRST204' ||
+  /title_en|title_pl|description_en|description_pl/i.test(error.message ?? '');
+
+const mapLegacyRow = (row: LegacyArtworkRow): Image => ({
+  id: row.id,
+  titleEn: row.title,
+  titlePl: '',
+  descriptionEn: row.description,
+  descriptionPl: '',
+  url: row.url,
+  storagePath: row.storage_path,
+});
 
 /** PostgreSQL integer max; Date.now() to za duze na sort_order */
 const getNextSortOrder = async (): Promise<number> => {
@@ -57,8 +87,22 @@ export const fetchArtworksFromDb = async (): Promise<Image[]> => {
     .order('sort_order', { ascending: true })
     .order('created_at', { ascending: true });
 
-  if (error) throw error;
-  return (data as ArtworkRow[]).map(mapRow);
+  if (!error) {
+    return (data as ArtworkRow[]).map(mapRow);
+  }
+
+  if (!isMissingI18nColumns(error)) {
+    throw error;
+  }
+
+  const legacy = await supabase
+    .from('artworks')
+    .select(legacyArtworkSelect)
+    .order('sort_order', { ascending: true })
+    .order('created_at', { ascending: true });
+
+  if (legacy.error) throw legacy.error;
+  return (legacy.data as LegacyArtworkRow[]).map(mapLegacyRow);
 };
 
 export interface UploadArtworkInput extends ArtworkCopy {

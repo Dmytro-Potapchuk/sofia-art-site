@@ -1,8 +1,9 @@
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getLocalizedArtwork } from '../../i18n/artworkText';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 import { useEscapeKey } from '../../hooks/useEscapeKey';
+import { useModalBackdropClose } from '../../hooks/useModalBackdropClose';
 import { ArtworkCopy, Image } from '../types';
 import styles from './AdminEditArtworkModal.module.css';
 
@@ -29,7 +30,7 @@ const AdminEditArtworkModal: React.FC<AdminEditArtworkModalProps> = ({
   const [copy, setCopy] = useState<ArtworkCopy>(emptyCopy);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const backdropPointerDown = useRef(false);
+  const backdropProps = useModalBackdropClose(onClose);
 
   useBodyScrollLock(open);
   useEscapeKey(open, onClose);
@@ -51,21 +52,6 @@ const AdminEditArtworkModal: React.FC<AdminEditArtworkModalProps> = ({
 
   const preview = getLocalizedArtwork(image, language);
 
-  const handleBackdropPointerDown = (
-    event: React.PointerEvent<HTMLDivElement>,
-  ) => {
-    backdropPointerDown.current = event.target === event.currentTarget;
-  };
-
-  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (
-      event.target === event.currentTarget &&
-      backdropPointerDown.current
-    ) {
-      onClose();
-    }
-  };
-
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setSubmitting(true);
@@ -85,8 +71,7 @@ const AdminEditArtworkModal: React.FC<AdminEditArtworkModalProps> = ({
     <div
       className={styles.overlay}
       role="presentation"
-      onPointerDown={handleBackdropPointerDown}
-      onClick={handleBackdropClick}
+      {...backdropProps}
     >
       <div
         className={styles.dialog}

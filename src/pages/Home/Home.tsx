@@ -1,5 +1,4 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { Gallery } from '../../components/Gallery';
 import { ContactSection } from '../../components/ContactSection/ContactSection';
 import { ScrollLink } from '../../components/ScrollLink/ScrollLink';
@@ -11,7 +10,6 @@ import { useArtworks } from '../../context/ArtworksContext';
 import styles from './Home.module.css';
 
 const Home = () => {
-  const location = useLocation();
   const { language, t } = useLanguage();
   const { images, featuredImage } = useArtworks();
   const heroImage = featuredImage;
@@ -72,7 +70,7 @@ const Home = () => {
           </header>
           <AdminFeaturedPanel />
           <AdminArtworkPanel />
-          <Gallery key={location.search} images={images} />
+          <Gallery images={images} />
         </div>
       </section>
 

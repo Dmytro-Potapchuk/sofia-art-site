@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 import { useEscapeKey } from '../../hooks/useEscapeKey';
+import { useModalBackdropClose } from '../../hooks/useModalBackdropClose';
 import styles from './LoginModal.module.css';
 
 interface LoginModalProps {
@@ -17,6 +18,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const backdropProps = useModalBackdropClose(onClose);
 
   useBodyScrollLock(open);
   useEscapeKey(open, onClose);
@@ -48,7 +50,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
   };
 
   return (
-    <div className={styles.overlay} role="presentation" onClick={onClose}>
+    <div
+      className={styles.overlay}
+      role="presentation"
+      {...backdropProps}
+    >
       <div
         className={styles.dialog}
         role="dialog"
@@ -56,10 +62,23 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
         aria-labelledby="login-title"
         onClick={(event) => event.stopPropagation()}
       >
-        <h2 id="login-title" className={styles.title}>
-          {t('authLoginTitle')}
-        </h2>
-        <p className={styles.subtitle}>{t('authLoginSubtitle')}</p>
+        <div className={styles.dialogHeader}>
+          <div className={styles.titleBlock}>
+            <h2 id="login-title" className={styles.title}>
+              {t('authLoginTitle')}
+            </h2>
+            <p className={styles.subtitle}>{t('authLoginSubtitle')}</p>
+          </div>
+          <button
+            type="button"
+            className={styles.closeBtn}
+            onClick={onClose}
+            disabled={submitting}
+            aria-label={t('modalClose')}
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
 
         <form className={styles.form} onSubmit={(e) => void handleSubmit(e)}>
           <label className={styles.label}>
@@ -71,6 +90,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={submitting}
             />
           </label>
 
@@ -83,6 +103,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, onClose }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={submitting}
             />
           </label>
 

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import { getLocalizedArtwork } from '../../i18n/artworkText';
 import { useAuth } from '../../context/AuthContext';
@@ -16,26 +16,8 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
   const { language, t } = useLanguage();
   const { isAdmin } = useAuth();
   const { removeImage, updateImage } = useArtworks();
-  const location = useLocation();
   const navigate = useNavigate();
-  const [pageSize] = useState<number>(6);
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const [editingImage, setEditingImage] = useState<Image | null>(null);
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const pageParam = params.get('page');
-    const page = pageParam ? parseInt(pageParam, 10) : 1;
-    setCurrentPage(Number.isNaN(page) ? 1 : page);
-  }, [location]);
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentPage]);
-
-  const totalPages = Math.ceil(images.length / pageSize);
-  const startIndex = (currentPage - 1) * pageSize;
-  const displayedImages = images.slice(startIndex, startIndex + pageSize);
 
   const handleDetailsClick = (id: string) => {
     navigate(`/image/${id}`);
@@ -51,34 +33,10 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
     }
   };
 
-  const goToPage = (page: number) => {
-    navigate({
-      pathname: '/',
-      search: `?page=${page}`,
-      hash: '#collection',
-    });
-  };
-
-  const handlePageClick = (page: number) => {
-    goToPage(page);
-  };
-
-  const handlePrevClick = () => {
-    if (currentPage > 1) {
-      goToPage(currentPage - 1);
-    }
-  };
-
-  const handleNextClick = () => {
-    if (currentPage < totalPages) {
-      goToPage(currentPage + 1);
-    }
-  };
-
   return (
     <div className={styles.gallery}>
       <div className={styles.grid}>
-        {displayedImages.map((image, index) => {
+        {images.map((image, index) => {
           const { title, description } = getLocalizedArtwork(image, language);
 
           return (
@@ -108,7 +66,7 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
               </button>
               <div className={styles.body}>
                 <span className={styles.index}>
-                  {String(startIndex + index + 1).padStart(2, '0')}
+                  {String(index + 1).padStart(2, '0')}
                 </span>
                 <h3 className={styles.title}>{title}</h3>
                 <p className={styles.description}>{description}</p>
@@ -145,45 +103,6 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
           );
         })}
       </div>
-
-      {totalPages > 1 && (
-        <nav className={styles.pagination} aria-label="Gallery pagination">
-          <button
-            type="button"
-            className={`${styles.pageBtn} ${styles.pageNav}`}
-            onClick={handlePrevClick}
-            disabled={currentPage === 1}
-          >
-            {t('galleryPrev')}
-          </button>
-
-          {[...Array(totalPages)].map((_, index) => {
-            const pageNumber = index + 1;
-            return (
-              <button
-                key={pageNumber}
-                type="button"
-                className={`${styles.pageBtn} ${
-                  pageNumber === currentPage ? styles.pageBtnActive : ''
-                }`}
-                onClick={() => handlePageClick(pageNumber)}
-                aria-current={pageNumber === currentPage ? 'page' : undefined}
-              >
-                {pageNumber}
-              </button>
-            );
-          })}
-
-          <button
-            type="button"
-            className={`${styles.pageBtn} ${styles.pageNav}`}
-            onClick={handleNextClick}
-            disabled={currentPage === totalPages}
-          >
-            {t('galleryNext')}
-          </button>
-        </nav>
-      )}
 
       <AdminEditArtworkModal
         image={editingImage}
