@@ -94,7 +94,7 @@ const AdminArtworkPanel: React.FC = () => {
               disabled={submitting}
             />
           </div>
-          {/*test*/}
+          {/*sdasdadasdwerdwa*/}
           <div className={styles.field}>
             <label className={styles.fieldLabel} htmlFor="admin-title-pl">
               {t('adminTitlePl')}
